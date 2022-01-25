@@ -1,3 +1,5 @@
+package com.example.csci_1175_project1;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -36,7 +38,9 @@ public class HoursAndFinances extends Application {
     private GridPane gridPaneFinances = new GridPane();
     private BorderPane borderPaneHours = new BorderPane();
     private BorderPane borderPaneFinances = new BorderPane();
-    Label max = new Label("Maximum lines is 15");
+    Label max = new Label("Maximum lines is 16");
+    MenuBar selection = new MenuBar();
+
 
     //TextFields for both calculators
     private TextField[] nameTextArrayHours = new TextField[16];
@@ -108,15 +112,57 @@ public class HoursAndFinances extends Application {
      * also tell what the menu items will do when selected.
      */
     public void start(Stage primaryStage) throws Exception {
-        MenuBar selection = new MenuBar();
         selection.prefWidthProperty().bind(primaryStage.widthProperty());
         mainVBox.getChildren().add(selection);
         pane.getChildren().add(mainVBox);
         Menu menuSelection = new Menu("Options");
         selection.getMenus().add(menuSelection);
         menuSelection.getItems().addAll(hoursItem, financesItem, exitItem);
-        vBoxHours.getChildren().add(new Label("Hours Calculator"));
-        vBoxFinances.getChildren().add(new Label("Financial Tracker: "));
+
+        //Initialize TextFields for hours
+        for (int i = 0; i < 16; i++) {
+            nameTextArrayHours[i] = new TextField();
+            timeTextArray[i] = new TextField();
+            nameTextArrayHours[i].setMaxWidth(200);
+            timeTextArray[i].setMaxWidth(100);
+            nameTextArrayHours[i].setPromptText("String");
+            timeTextArray[i].setPromptText("Double #");
+        }
+
+        //Initialize TextFields for finances
+        for (int i = 0; i < 16; i++) {
+            nameTextArrayIncome[i] = new TextField();
+            nameTextArrayIncome[i].setMaxWidth(200);
+            nameTextArrayIncome[i].setPromptText("Name");
+
+            incomeTextFieldArray[i] = new TextField();
+            incomeTextFieldArray[i].setMaxWidth(100);
+            incomeTextFieldArray[i].setPromptText("Total Monthly");
+
+            nameTextArrayExpenses[i] = new TextField();
+            nameTextArrayExpenses[i].setMaxWidth(200);
+            nameTextArrayExpenses[i].setPromptText("Name");
+
+            financesTextArray[i] = new TextField();
+            financesTextArray[i].setMaxWidth(100);
+            financesTextArray[i].setPromptText("Cost Monthly");
+
+            financesTextArray2[i] = new TextField();
+            financesTextArray2[i].setMaxWidth(100);
+            financesTextArray2[i].setPromptText("Cost Monthly");
+
+            financesTextArray3[i] = new TextField();
+            financesTextArray3[i].setMaxWidth(100);
+            financesTextArray3[i].setPromptText("Cost Monthly");
+
+            financesTextArray4[i] = new TextField();
+            financesTextArray4[i].setMaxWidth(100);
+            financesTextArray4[i].setPromptText("Cost Monthly");
+
+            financesTextArray5[i] = new TextField();
+            financesTextArray5[i].setMaxWidth(100);
+            financesTextArray5[i].setPromptText("Cost Monthly");
+        }
 
 
         Scene scene = new Scene(pane, 1200, 600);
@@ -156,21 +202,15 @@ public class HoursAndFinances extends Application {
      * to create textFields and correctly calculate the user's weekly hour usage.
      */
     public void hours() {
-        //Initialize the TextFields
-        for (int i = 0; i < 16; i++) {
-            nameTextArrayHours[i] = new TextField();
-            timeTextArray[i] = new TextField();
-            nameTextArrayHours[i].setMaxWidth(200);
-            timeTextArray[i].setMaxWidth(100);
-            nameTextArrayHours[i].setPromptText("String");
-            timeTextArray[i].setPromptText("Double #");
-        }
-        //Only used if the other menu item has been selected
-        if (mainVBox.getChildren().contains(vBoxFinances)) {
-            mainVBox.getChildren().remove(vBoxFinances);
-            mainVBox.getChildren().remove(vBoxHours);
-            mainVBox.getChildren().add(vBoxHours);
-        }
+        //Clear all Panes and VBoxes
+        mainVBox.getChildren().clear();
+        mainVBox.getChildren().add(selection);
+        vBoxHours.getChildren().clear();
+        gridPaneHours.getChildren().clear();
+        borderPaneHours.getChildren().clear();
+        vBoxHours.getChildren().add(new Label("Hours Calculator"));
+
+        timeGridPane(timesHours); //Show GridPane
 
         //Setting the alert name and message.
         incorrectField.setTitle("Incorrect Input");
@@ -194,12 +234,12 @@ public class HoursAndFinances extends Application {
         mainVBox.getChildren().add(vBoxHours);
 
         addHours.setOnAction(e -> { //When addHours is selected
-            timeGridPane(timesHours++); //Call upon timeGridPane
+            timeGridPane(++timesHours); //Call upon timeGridPane
         });
 
 
         minusHours.setOnAction(e -> { //When minusHours is selected
-            timeGridPane(timesHours-- - 2); //Call upon timeGridPane
+            timeGridPane(--timesHours); //Call upon timeGridPane
         });
 
 
@@ -252,6 +292,8 @@ public class HoursAndFinances extends Application {
                 nameTextArrayHours[i].setPromptText("String");
                 timeTextArray[i].setPromptText("Double #");
             }
+
+            timeGridPane(timesHours); //Show GridPane again
             //Reset for hours calculator
             borderPaneHours.setBottom(buttonPlacement);
             borderPaneHours.setCenter(gridPaneHours);
@@ -266,6 +308,8 @@ public class HoursAndFinances extends Application {
      * @param times (int; times the for loop will run, from the hours method)
      */
     public void timeGridPane(int times) {
+        System.out.println(times);
+        System.out.println(timesHours);
         //This will run if the times is less than or equal to 16
         if (times <= 16) {
             gridPaneHours.getChildren().clear(); //Clear the pane as to not get overlapping
@@ -273,7 +317,7 @@ public class HoursAndFinances extends Application {
             //For loop to add/subtract rows from the gridPane
             for (int i = 0; i < times; i++) {
                 vBoxHours.getChildren().remove(max);
-                gridPaneHours.add(new Label("Item " + (i)), 0, i);
+                gridPaneHours.add(new Label("Item " + (i + 1)), 0, i);
                 gridPaneHours.add(nameTextArrayHours[i], 1, i);
 
                 gridPaneHours.add(new Label("Time in hours: "), 2, i);
@@ -283,7 +327,7 @@ public class HoursAndFinances extends Application {
         else if (times > 16) {
             vBoxHours.getChildren().remove(max);
             vBoxHours.getChildren().add(max); //Show the max line limit if reached
-            timesHours = 17;
+            timesHours = 16;
         }
     }
 
@@ -298,7 +342,7 @@ public class HoursAndFinances extends Application {
         if (times - 1 < 16) {
 
             //For loop to gather data from the textFields
-            for (int i = 0; i < times - 1; i++) {
+            for (int i = 0; i < times; i++) {
                 nameArrayHours[i] = nameTextArrayHours[i].getText();
                 textTime[i] = timeTextArray[i].getText();
                 timeArray[i] = Double.parseDouble(textTime[i]);
@@ -333,48 +377,17 @@ public class HoursAndFinances extends Application {
      * and moneyLeft methods with the Finances class to create an object and return accurate totals.
      */
     public void finances() {
-        //initialize the TextFields
-        for (int i = 0; i < 16; i++) {
-            nameTextArrayIncome[i] = new TextField();
-            nameTextArrayIncome[i].setMaxWidth(200);
-            nameTextArrayIncome[i].setPromptText("Name");
+        //Clear all Panes and VBoxes
+        mainVBox.getChildren().clear();
+        mainVBox.getChildren().add(selection);
+        vBoxFinances.getChildren().clear();
+        gridPaneFinances.getChildren().clear();
+        borderPaneFinances.getChildren().clear();
+        vBoxFinances.getChildren().add(new Label("Financial Tracker: "));
 
-            incomeTextFieldArray[i] = new TextField();
-            incomeTextFieldArray[i].setMaxWidth(100);
-            incomeTextFieldArray[i].setPromptText("Total Monthly");
-
-            nameTextArrayExpenses[i] = new TextField();
-            nameTextArrayExpenses[i].setMaxWidth(200);
-            nameTextArrayExpenses[i].setPromptText("Name");
-
-            financesTextArray[i] = new TextField();
-            financesTextArray[i].setMaxWidth(100);
-            financesTextArray[i].setPromptText("Cost Monthly");
-
-            financesTextArray2[i] = new TextField();
-            financesTextArray2[i].setMaxWidth(100);
-            financesTextArray2[i].setPromptText("Cost Monthly");
-
-            financesTextArray3[i] = new TextField();
-            financesTextArray3[i].setMaxWidth(100);
-            financesTextArray3[i].setPromptText("Cost Monthly");
-
-            financesTextArray4[i] = new TextField();
-            financesTextArray4[i].setMaxWidth(100);
-            financesTextArray4[i].setPromptText("Cost Monthly");
-
-            financesTextArray5[i] = new TextField();
-            financesTextArray5[i].setMaxWidth(100);
-            financesTextArray5[i].setPromptText("Cost Monthly");
-        }
+        incomeGridPane(timesIncome); //Show GridPane
 
         HBox buttonPlacement = new HBox(); //Hbox for buttons
-        //Only used if the other menu item is selected
-        if (mainVBox.getChildren().contains(vBoxHours)) {
-            mainVBox.getChildren().remove(vBoxHours);
-            mainVBox.getChildren().remove(vBoxFinances);
-            mainVBox.getChildren().add(vBoxFinances);
-        }
         //Set alert title and message
         incorrectField.setTitle("Incorrect Input");
         incorrectField.setContentText("Please make sure that the fields are all correctly entered." +
@@ -404,9 +417,10 @@ public class HoursAndFinances extends Application {
         nextExpense.setOnAction(e -> { //When nextExpense is selected
             try {
                 incomeTotal(timesIncome); //Total the income up
+                gridPaneFinances.getChildren().clear();
                 buttonPlacement.getChildren().removeAll(addIncome, minusIncome, nextExpense);
                 buttonPlacement.getChildren().addAll(addExpense, minusExpense, calculateFinances);
-                gridPaneFinances.getChildren().clear();
+                expensesGridPane(timesExpenses);
             }catch (NumberFormatException ex){
                 System.err.println(ex);
                 incorrectField.showAndWait(); //Ask user to check inputs
@@ -414,17 +428,17 @@ public class HoursAndFinances extends Application {
         });
 
         addIncome.setOnAction(e -> { //When addIncome is selected
-            incomeGridPane(timesIncome++); //Call upon incomeGridPane
+            incomeGridPane(++timesIncome); //Call upon incomeGridPane
         });
         minusIncome.setOnAction(e -> { //When minusIncome is selected
-            incomeGridPane(timesIncome-- - 2); //Call upon incomeGridPane
+            incomeGridPane(--timesIncome); //Call upon incomeGridPane
         });
 
         addExpense.setOnAction(e -> {//When addExpense is selected
-            expensesGridPane(timesExpenses++);//Call upon expensesGridPane
+            expensesGridPane(++timesExpenses);//Call upon expensesGridPane
         });
         minusExpense.setOnAction(e -> {//When minusExpense is selected
-            expensesGridPane(timesExpenses-- - 2);//Call upon expensesGridPane
+            expensesGridPane(--timesExpenses);//Call upon expensesGridPane
         });
 
         calculateFinances.setOnAction(e ->{ //When calculateFinances is selected
@@ -516,6 +530,8 @@ public class HoursAndFinances extends Application {
                 financesTextArray5[i].setMaxWidth(100);
                 financesTextArray5[i].setPromptText("Cost Monthly");
             }
+
+            incomeGridPane(timesIncome); //Show gridPane again
             //Remove all buttons for expenses and replace with income buttons
             buttonPlacement.getChildren().removeAll(addExpense, minusExpense, calculateFinances);
             buttonPlacement.getChildren().addAll(addIncome, minusIncome, nextExpense);
@@ -538,7 +554,7 @@ public class HoursAndFinances extends Application {
             //For loop to create the layout
             for (int i = 0; i < times; i++) {
                 vBoxFinances.getChildren().remove(max);
-                gridPaneFinances.add(new Label("Source: " + (i)), 0, i);
+                gridPaneFinances.add(new Label("Source: " + (i + 1)), 0, i);
                 gridPaneFinances.add(nameTextArrayIncome[i], 1, i);
 
                 gridPaneFinances.add(new Label("Amount: "), 2, i);
@@ -547,7 +563,7 @@ public class HoursAndFinances extends Application {
         } else {
             vBoxFinances.getChildren().remove(max);
             vBoxFinances.getChildren().add(max); //Show max lines if hit
-            timesIncome = 17;
+            timesIncome = 16;
         }
     }
 
@@ -584,7 +600,7 @@ public class HoursAndFinances extends Application {
         } else {
             vBoxFinances.getChildren().remove(max);
             vBoxFinances.getChildren().add(max); //Show max lines if hit
-            timesExpenses = 17;
+            timesExpenses = 16;
         }
 
 
@@ -600,7 +616,7 @@ public class HoursAndFinances extends Application {
         if (times - 1 < 16) {
 
             //For loop to gather information from the TextFields
-            for (int i = 0; i < times - 1; i++) {
+            for (int i = 0; i < times; i++) {
                 nameArrayIncome[i] = nameTextArrayIncome[i].getText();
 
                 incomeTextArray[i] = incomeTextFieldArray[i].getText();
@@ -622,7 +638,7 @@ public class HoursAndFinances extends Application {
         if (times - 1 < 16) {
 
             //For loop to gather information from the TextFields
-            for (int i = 0; i < times - 1; i++) {
+            for (int i = 0; i < times; i++) {
                 nameArrayExpense[i] = nameTextArrayExpenses[i].getText();
 
                 expenseTextArray[i] = financesTextArray[i].getText();
@@ -666,7 +682,7 @@ public class HoursAndFinances extends Application {
             //Print out the amounts with money gained
             printStream.println("\n\nMonth " + month + ": ");
             printStream.println("Money gained and the source: ");
-            for (int i = 0; i < timesIncome1 - 1; i++) {
+            for (int i = 0; i < timesIncome1; i++) {
                 printStream.println(nameArrayIncome[i] + "     Money made: $" + df.format(incomeArray[i]));
             }
 
@@ -675,7 +691,7 @@ public class HoursAndFinances extends Application {
                     "\nMoney spent and the name of expenses: ");
 
             //For loop to print out Expenses and total expenses for each item
-            for (int i = 0; i < timesExpenses1 - 1; i++){
+            for (int i = 0; i < timesExpenses1; i++){
                 double totalExpense = (expenseArray[i] + expense2Array[i]
                         + expense3Array[i] + expense4Array[i] + expense5Array[i]);
                 printStream.println(nameArrayExpense[i] + "   Expense 1: $" + df.format(expenseArray[i])
